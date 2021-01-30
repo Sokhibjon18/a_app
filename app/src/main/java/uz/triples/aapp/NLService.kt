@@ -1,9 +1,13 @@
 package uz.triples.aapp
 
+import android.R.attr.bitmap
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
+import java.io.ByteArrayOutputStream
 import java.util.*
 
 
@@ -25,12 +29,12 @@ class NLService : NotificationListenerService() {
         Log.i("Title", title)
         Log.i("Text", text)
 
-        val msgrcv = Intent("Msg")
-        msgrcv.putExtra("package", pack)
-        msgrcv.putExtra("title", title)
-        msgrcv.putExtra("text", text)
+        val intent = Intent("Msg")
+        intent.putExtra("package", pack)
+        intent.putExtra("title", title)
+        intent.putExtra("text", text)
 
-        sendBroadcast(msgrcv)
+        sendBroadcast(intent)
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {
@@ -40,7 +44,7 @@ class NLService : NotificationListenerService() {
     private fun gettingAppName(pack: String): String{
         var packCopy = pack
         while (packCopy.indexOf(".") >= 0){
-            packCopy = packCopy.substring(packCopy.indexOf(".")+1)
+            packCopy = packCopy.substring(packCopy.indexOf(".") + 1)
         }
         packCopy = packCopy.substring(0, 1).toUpperCase(Locale.ROOT) + packCopy.substring(1);
         return packCopy
