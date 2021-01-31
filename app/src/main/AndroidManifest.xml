@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uz.triples.aapp">
 
+    <uses-permission android:name="uz.triples.aapp.WRITE_DATABASE" />
+
+    <uses-permission android:name="uz.triples.aapp.READ_DATABASE" />
 
     <application
         android:allowBackup="true"
@@ -27,8 +30,12 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
 
             </intent-filter>
-
         </service>
+        <provider
+            android:name=".NotificationContentProvider"
+            android:authorities="uz.triples.aapp"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>
