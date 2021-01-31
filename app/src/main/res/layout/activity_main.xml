@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintWidth_percent="0.5"
-        android:text="Enable Permission"
+        android:text="@string/enable_permission"
         android:padding="16dp"
         android:textAllCaps="false"
         android:layout_height="wrap_content"
