@@ -1,16 +1,9 @@
 package uz.triples.aapp
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.*
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
-import android.util.Log
-import android.widget.Toast
+import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,33 +29,27 @@ class MainActivity : AppCompatActivity() {
 
         registerReceiver(onNotice, IntentFilter("Msg"));
 
-        btn1.setOnClickListener {
+        btn.setOnClickListener {
             val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
             startActivity(intent)
         }
+    }
 
-        btn.setOnClickListener {
-            val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            val mBuilder =
-                NotificationCompat.Builder(this@MainActivity, default_notification_channel_id)
-            mBuilder.setContentTitle("My Notification")
-            mBuilder.setContentText("Notification Listener Service Example")
-            mBuilder.setTicker("Notification Listener Service Example")
-            mBuilder.setSmallIcon(R.drawable.ic_launcher_foreground)
-            mBuilder.setAutoCancel(true)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val importance = NotificationManager.IMPORTANCE_HIGH
-                val notificationChannel = NotificationChannel(
-                    NOTIFICATION_CHANNEL_ID,
-                    "NOTIFICATION_CHANNEL_NAME",
-                    importance
-                )
-                mBuilder.setChannelId(NOTIFICATION_CHANNEL_ID)
-                mNotificationManager.createNotificationChannel(notificationChannel)
-            }
+    private fun notificationListenerEnabled(): Boolean {
+        val cn = ComponentName(this, NLService::class.java)
+        val flat: String = Settings.Secure.getString(
+            this.contentResolver,
+            "enabled_notification_listeners"
+        )
+        return flat.contains(cn.flattenToString())
+    }
 
-            mNotificationManager.notify(System.currentTimeMillis().toInt(), mBuilder.build())
-        }
+    override fun onResume() {
+        if (notificationListenerEnabled())
+            btn.text = "Disable permission"
+        else
+            btn.text = "Get permission"
+        super.onResume()
     }
 
     private val onNotice: BroadcastReceiver = object : BroadcastReceiver() {
